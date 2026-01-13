@@ -1,138 +1,144 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <title>ISIMG Exact Calculator</title>
-    <style>
-      body {
-        font-family: Arial;
-        background: #0f172a;
-        color: white;
-        padding: 30px;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      th,
-      td {
-        padding: 8px;
-        text-align: center;
-        border-bottom: 1px solid #334155;
-      }
-      th {
-        background: #111827;
-      }
-      input {
-        width: 90%;
-        padding: 6px;
-        border-radius: 6px;
-        border: none;
-        background: #1e293b;
-        color: white;
-      }
-      .disabled {
-        background: #020617;
-        opacity: 0.4;
-      }
-      button {
-        margin-top: 15px;
-        padding: 10px 18px;
-        border: none;
-        border-radius: 8px;
-        background: #38bdf8;
-        font-size: 16px;
-      }
-      .result {
-        margin-top: 20px;
-        font-size: 22px;
-        text-align: center;
-      }
-    </style>
-  </head>
+<head>
+<meta charset="UTF-8">
+<title>ISIMG Mobile Calculator</title>
 
-  <body>
-    <h2 style="text-align: center">ISIMG – Exact Relevé Calculator</h2>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial;
+  background:#0f172a;
+  color:white;
+  padding:12px;
+}
+h2{
+  text-align:center;
+  margin-bottom:15px;
+}
+.card{
+  background:#020617;
+  border:1px solid #334155;
+  border-radius:12px;
+  padding:12px;
+  margin-bottom:12px;
+}
+.card h3{
+  margin:0 0 6px 0;
+  font-size:16px;
+}
+.type{
+  font-size:13px;
+  color:#94a3b8;
+  margin-bottom:8px;
+}
+.inputs{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:8px;
+}
+input{
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  background:#1e293b;
+  color:white;
+  font-size:15px;
+}
+input:disabled{
+  opacity:0.4;
+}
+button{
+  width:100%;
+  margin-top:15px;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:#38bdf8;
+  font-size:18px;
+  font-weight:bold;
+}
+.result{
+  margin-top:20px;
+  font-size:20px;
+  text-align:center;
+}
+</style>
+</head>
 
-    <table id="t">
-      <thead>
-        <tr>
-          <th>Matière</th>
-          <th>Coeff</th>
-          <th>DS</th>
-          <th>TP / Oral</th>
-          <th>EX</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+<body>
 
-    <button onclick="calc()">Calculate</button>
-    <div class="result" id="res"></div>
+<h2>ISIMG – Mobile Grade Calculator</h2>
 
-    <script>
-      const modules = [
-        ["Probabilité et statistique", 2, "DSTP"],
-        ["Théorie des langages et automates", 1, "DS"],
-        ["Graphes et optimisation", 1, "DS"],
-        ["Conception des systèmes d'information", 1.5, "DS"],
-        ["Programmation Java", 2, "DSTP"],
-        ["Ingénierie des bases de données", 1.5, "DSTP"],
-        ["Services des réseaux", 1, "DSTP"],
-        ["Anglais 3", 1, "CC"],
-        ["Gestion d’entreprise", 1, "CC"],
-        ["Web Design", 1.5, "DSTP"],
-        ["Animation 2D", 1.5, "DSTP"],
-      ];
+<div id="app"></div>
 
-      const tbody = document.querySelector("tbody");
+<button onclick="calc()">Calculate</button>
+<div class="result" id="res"></div>
 
-      modules.forEach((m) => {
-        let tr = document.createElement("tr");
-        tr.dataset.type = m[2];
-        tr.dataset.coef = m[1];
+<script>
+const modules = [
+["Probabilité et statistique",2,"DSTP"],
+["Théorie des langages et automates",1,"DS"],
+["Graphes et optimisation",1,"DS"],
+["Conception des systèmes d'information",1.5,"DS"],
+["Programmation Java",2,"DSTP"],
+["Ingénierie des bases de données",1.5,"DSTP"],
+["Services des réseaux",1,"DSTP"],
+["Anglais 3",1,"CC"],
+["Gestion d’entreprise",1,"CC"],
+["Web Design",1.5,"DSTP"],
+["Animation 2D",1.5,"DSTP"]
+];
 
-        tr.innerHTML = `
- <td>${m[0]}</td>
- <td>${m[1]}</td>
- <td><input class="ds" type="number"></td>
- <td><input class="tp" type="number"></td>
- <td><input class="ex" type="number"></td>
+const app = document.getElementById("app");
+
+modules.forEach(m=>{
+ let div=document.createElement("div");
+ div.className="card";
+ div.dataset.type=m[2];
+ div.dataset.coef=m[1];
+
+ div.innerHTML=`
+ <h3>${m[0]}</h3>
+ <div class="type">${m[2]} | coeff ${m[1]}</div>
+ <div class="inputs">
+   <input class="ds" type="number" placeholder="DS">
+   <input class="tp" type="number" placeholder="${m[2]==='CC'?'Oral':'TP'}">
+   <input class="ex" type="number" placeholder="Exam">
+ </div>
  `;
-        tbody.appendChild(tr);
+ app.appendChild(div);
 
-        if (m[2] === "DS") {
-          tr.querySelector(".tp").disabled = true;
-          tr.querySelector(".tp").classList.add("disabled");
-        }
-      });
+ if(m[2]==="DS"){
+   div.querySelector(".tp").disabled=true;
+ }
+});
 
-      function calc() {
-        let sum = 0,
-          coefSum = 0;
+function calc(){
+ let sum=0,coefSum=0;
 
-        document.querySelectorAll("tbody tr").forEach((r) => {
-          let type = r.dataset.type;
-          let c = parseFloat(r.dataset.coef);
+ document.querySelectorAll(".card").forEach(c=>{
+   let type=c.dataset.type;
+   let coef=parseFloat(c.dataset.coef);
 
-          let ds = +r.querySelector(".ds").value || 0;
-          let tp = +r.querySelector(".tp").value || 0;
-          let ex = +r.querySelector(".ex").value || 0;
+   let ds=+c.querySelector(".ds").value||0;
+   let tp=+c.querySelector(".tp").value||0;
+   let ex=+c.querySelector(".ex").value||0;
 
-          let note = 0;
-          if (type === "DSTP") note = ds * 0.15 + tp * 0.15 + ex * 0.7;
-          if (type === "DS") note = ds * 0.3 + ex * 0.7;
-          if (type === "CC") note = ds * 0.4 + tp * 0.2 + ex * 0.4;
+   let note=0;
+   if(type==="DSTP") note=ds*0.15+tp*0.15+ex*0.7;
+   if(type==="DS") note=ds*0.3+ex*0.7;
+   if(type==="CC") note=ds*0.4+tp*0.2+ex*0.4;
 
-          sum += note * c;
-          coefSum += c;
-        });
+   sum+=note*coef;
+   coefSum+=coef;
+ });
 
-        document.getElementById("res").innerText =
-          "المعدل العام = " + (sum / coefSum).toFixed(2);
-      }
-    </script>
-  </body>
+ document.getElementById("res").innerText =
+ "المعدل العام = "+(sum/coefSum).toFixed(2);
+}
+</script>
+
+</body>
 </html>
-<!-- deploy -->
-
